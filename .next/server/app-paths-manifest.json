@@ -1,0 +1,11 @@
+{
+  "/agendamentos/page": "app/agendamentos/page.js",
+  "/login/page": "app/login/page.js",
+  "/fluxo-caixa/page": "app/fluxo-caixa/page.js",
+  "/orcamentos/novo/page": "app/orcamentos/novo/page.js",
+  "/orcamentos/page": "app/orcamentos/page.js",
+  "/api/health/route": "app/api/health/route.js",
+  "/api/clients/route": "app/api/clients/route.js",
+  "/api/services/route": "app/api/services/route.js",
+  "/api/employees/route": "app/api/employees/route.js"
+}
