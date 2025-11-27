@@ -88,7 +88,7 @@ export default function ConfiguracoesPage() {
     if (!company) return
     setSaving(true)
     try {
-      const saved = await saveCompany({ ...company })
+      const saved = await saveCompany(company as any)
       setCompany({ ...company, id: saved.id })
       alert('Configurações salvas com sucesso')
     } catch (e) {

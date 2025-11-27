@@ -40,9 +40,9 @@ function streamText(text: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const start = Date.now()
+  const ctx = { requestId: req.headers.get('x-request-id') || undefined, path: req.nextUrl.pathname, method: req.method }
   try {
-    const start = Date.now()
-    const ctx = { requestId: req.headers.get('x-request-id') || undefined, path: req.nextUrl.pathname, method: req.method }
     logger.info('api_request_start', ctx)
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0] || null
     if (!allow(ip, 'chatbot', 60, 60_000)) {
@@ -64,14 +64,14 @@ export async function POST(req: NextRequest) {
     }
     if (qlow.includes('pendências') || qlow.includes('agenda')) {
       const items = await listAgendaToday(req)
-      const text = items.map((i) => `${i.time || ''} ${i.customer} - ${i.service} (${i.status})`).join('\n') || 'Sem compromissos para hoje.'
+      const text = items.map((i: any) => `${i.time || ''} ${i.customer} - ${i.service} (${i.status})`).join('\n') || 'Sem compromissos para hoje.'
       const res = Response.json({ reply: text })
       logger.info('api_request_end', { ...ctx, status: 200, duration_ms: Date.now() - start })
       return res
     }
     if (qlow.includes('faturas em atraso') || qlow.includes('lembrete de pagamento')) {
       const items = await listOverdueInvoices(req)
-      const text = items.map((i) => `#${i.invoice_number} ${i.client_name} venceu em ${new Date(i.due_date).toLocaleDateString('pt-BR')} (R$ ${Number(i.total || 0).toLocaleString('pt-BR')})`).join('\n') || 'Nenhuma fatura em atraso.'
+      const text = items.map((i: any) => `#${i.invoice_number} ${i.client_name} venceu em ${new Date(i.due_date).toLocaleDateString('pt-BR')} (R$ ${Number(i.total || 0).toLocaleString('pt-BR')})`).join('\n') || 'Nenhuma fatura em atraso.'
       const res = Response.json({ reply: text })
       logger.info('api_request_end', { ...ctx, status: 200, duration_ms: Date.now() - start })
       return res

@@ -368,6 +368,7 @@ export async function addEmployeeWorkRecord(input: { employeeId: string; workDat
     workDate: input.workDate,
     workDays: input.workDays,
     dailyRate: input.dailyRate,
+    totalAmount: Number(input.dailyRate || 0) * Number(input.workDays || 0),
     notes: input.notes || null,
     paid: false,
   }

@@ -31,7 +31,7 @@ export default function OrcamentoChatbot(props: {
 
   const send = async () => {
     if (!input.trim()) return
-    const next = [...messages, { role: 'user', content: input }]
+    const next: Array<{ role: 'user' | 'assistant'; content: string; actions?: any }> = [...messages, { role: 'user', content: input }]
     setMessages(next)
     setLoading(true)
     try {

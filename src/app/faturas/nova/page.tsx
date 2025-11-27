@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { getAppointmentsWithRelations, createInvoice, getInvoicesByAppointmentIds } from '@/lib/db'
+import { getAppointmentsWithRelations, createInvoice as createInvoiceDb, getInvoicesByAppointmentIds } from '@/lib/db'
 import { useRouter } from 'next/navigation'
 
 interface AppointmentOption {
@@ -51,13 +51,13 @@ export default function NovaFaturaPage() {
 
   const total = (subtotal || 0) + (tax || 0)
 
-  const createInvoice = async () => {
+  const handleCreateInvoice = async () => {
     if (!appointmentId) {
       alert('Selecione um agendamento')
       return
     }
     try {
-      const created = await createInvoice({
+      const created = await createInvoiceDb({
         appointment_id: appointmentId,
         invoice_number: String(Math.floor(Math.random() * 900000) + 100000),
         subtotal,
@@ -138,7 +138,7 @@ export default function NovaFaturaPage() {
 
             <div className="flex justify-end">
               <button
-                onClick={createInvoice}
+                onClick={handleCreateInvoice}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
                 Criar Fatura

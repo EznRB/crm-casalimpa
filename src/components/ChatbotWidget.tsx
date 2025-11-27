@@ -45,7 +45,7 @@ export default function ChatbotWidget() {
   const send = async (text?: string) => {
     const content = (text ?? input).trim()
     if (!content) return
-    const next = [...messages, { role: 'user', content }]
+    const next: ChatMessage[] = [...messages, { role: 'user', content }]
     setMessages(next)
     setLoading(true)
     setInput('')
@@ -138,4 +138,3 @@ export default function ChatbotWidget() {
     </div>
   )
 }
-

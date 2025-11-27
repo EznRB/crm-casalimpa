@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { getQuoteById, updateQuote, addQuoteItem, updateQuoteItem, deleteQuoteItem } from '@/lib/db'
+import { supabase } from '@/lib/supabase'
 import { Save, ChevronLeft, Plus, Bold, Italic, Underline, FileText, X } from 'lucide-react'
 import OrcamentoChatbot from '@/components/OrcamentoChatbot'
 
@@ -29,7 +30,7 @@ export default function EditarOrcamentoPage() {
         const data = await getQuoteById(id)
         setQuote(data)
         setItems((data?.quote_items || []) as any)
-        setRichHtml((data?.rich_content?.html as string) || '')
+        setRichHtml(((data as any)?.rich_content?.html as string) || '')
         const pm = (data as any)?.payment_methods || []
         setPaymentMethods(Array.isArray(pm) ? pm : [])
       } catch (e) {
