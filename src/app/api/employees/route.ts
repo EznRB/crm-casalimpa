@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from('employees')
     .select('*')
+    .eq('owner_user_id', user.id)
     .order('name', { ascending: true })
   if (error) {
     logger.error('employees_list_failed', { ...ctx, err: error.message })
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
     const { data, error } = await supabase
       .from('employees')
-      .insert([{ name: body.name, email: body.email ?? null, phone: body.phone, cpf: cleanCpf, position: body.position ?? 'Funcionário', dailyRate: 150, notes: body.notes ?? null, active: body.active ?? true }])
+      .insert([{ name: body.name, email: body.email ?? null, phone: body.phone, cpf: cleanCpf, position: body.position ?? 'Funcionário', dailyRate: 150, notes: body.notes ?? null, active: body.active ?? true, owner_user_id: user.id }])
       .select('*')
       .single()
     if (error) throw error

@@ -32,6 +32,13 @@ async function ensureAdminUser() {
   } else {
     console.log('✅ Admin user ready:', email);
   }
+  try {
+    const { data: users } = await supabase.auth.admin.listUsers();
+    const admin = (users?.users || []).find((u) => u.email === email);
+    return admin?.id || null;
+  } catch (e) {
+    return null;
+  }
 }
 
 // Sample data for seeding
@@ -87,13 +94,14 @@ async function seedDatabase() {
   console.log('🌱 Starting database seeding...');
 
   try {
-    await ensureAdminUser();
+    const adminUserId = await ensureAdminUser();
     // Insert customers
     console.log('👥 Inserting customers...');
     for (const customer of customers) {
+      const payload = adminUserId ? { ...customer, owner_user_id: adminUserId } : customer;
       const { error } = await supabase
         .from('customers')
-        .insert([customer]);
+        .insert([payload]);
       
       if (error) {
         console.error('Error inserting customer:', customer.name, error.message);
@@ -105,9 +113,10 @@ async function seedDatabase() {
     // Insert services
     console.log('🧽 Inserting services...');
     for (const service of services) {
+      const payload = adminUserId ? { ...service, owner_user_id: adminUserId } : service;
       const { error } = await supabase
         .from('services')
-        .insert([service]);
+        .insert([payload]);
       
       if (error) {
         console.error('Error inserting service:', service.name, error.message);

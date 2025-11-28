@@ -12,6 +12,7 @@ export async function GET(
     .from('employees')
     .select('*')
     .eq('id', params.id)
+    .eq('owner_user_id', user.id)
     .single()
 
   if (error || !data) return NextResponse.json({ error: 'Funcionário não encontrado' }, { status: 404 })
@@ -33,6 +34,7 @@ export async function PUT(
       .from('employees')
       .update(payload)
       .eq('id', params.id)
+      .eq('owner_user_id', user.id)
       .select('*')
       .single()
 
@@ -51,7 +53,7 @@ export async function DELETE(
   const { supabase, user } = await getAuthUser(request)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
-  const { error } = await supabase.from('employees').delete().eq('id', params.id)
+  const { error } = await supabase.from('employees').delete().eq('id', params.id).eq('owner_user_id', user.id)
   if (error) {
     console.error('Erro ao excluir funcionário:', error)
     return NextResponse.json({ error: 'Erro ao excluir funcionário' }, { status: 500 })

@@ -28,9 +28,29 @@ type ServiceUpdate = Database['public']['Tables']['services']['Update']
 type AppointmentInsert = Database['public']['Tables']['appointments']['Insert']
 type AppointmentUpdate = Database['public']['Tables']['appointments']['Update']
 
+async function getUid(): Promise<string | null> {
+  const { data } = await supabase.auth.getUser()
+  return data?.user?.id || null
+}
+
+async function selectOwn(table: string, columns: string): Promise<any> {
+  const uid = await getUid()
+  let q = supabase.from(table).select(columns)
+  if (uid) q = q.eq('owner_user_id', uid)
+  return q
+}
+
+async function withOwner<T extends Record<string, any>>(payload: T): Promise<T> {
+  const uid = await getUid()
+  if (uid) return { ...payload, owner_user_id: uid }
+  return payload
+}
+
 export async function getCustomers(): Promise<CustomerRow[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('customers').select('*').order('name')
+  const uid = await getUid()
+  const base = supabase.from('customers').select('*')
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid) : base).order('name')
   if (error) throw error
   return data || []
 }
@@ -43,7 +63,8 @@ export async function deleteCustomer(id: string): Promise<void> {
 
 export async function createCustomer(payload: CustomerInsert): Promise<CustomerRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('customers').insert([payload]).select('*').single()
+  const withUid = await withOwner(payload as any)
+  const { data, error } = await supabase.from('customers').insert([withUid]).select('*').single()
   if (error) throw error
   return data as CustomerRow
 }
@@ -57,7 +78,9 @@ export async function updateCustomer(id: string, payload: CustomerUpdate): Promi
 
 export async function getServices(): Promise<ServiceRow[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('services').select('*').order('name')
+  const uid = await getUid()
+  const base = supabase.from('services').select('*')
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid) : base).order('name')
   if (error) throw error
   return data || []
 }
@@ -70,7 +93,8 @@ export async function deleteService(id: string): Promise<void> {
 
 export async function createService(payload: ServiceInsert): Promise<ServiceRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('services').insert([payload]).select('*').single()
+  const withUid = await withOwner(payload as any)
+  const { data, error } = await supabase.from('services').insert([withUid]).select('*').single()
   if (error) throw error
   return data as ServiceRow
 }
@@ -84,14 +108,17 @@ export async function updateService(id: string, payload: ServiceUpdate): Promise
 
 export async function getInvoices(): Promise<InvoiceRow[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('invoices').select('*').order('issue_date', { ascending: false })
+  const uid = await getUid()
+  const base = supabase.from('invoices').select('*')
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid) : base).order('issue_date', { ascending: false })
   if (error) throw error
   return data || []
 }
 
 export async function getInvoicesWithAppointment(): Promise<(InvoiceRow & { appointments: { customers: { name: string }; services: { name: string } } })[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase
+  const uid = await getUid()
+  const base = supabase
     .from('invoices')
     .select(`
       id,
@@ -106,13 +133,16 @@ export async function getInvoicesWithAppointment(): Promise<(InvoiceRow & { appo
       appointments ( customers (name), services (name) )
     `)
     .order('issue_date', { ascending: false }) as any
+  const q = uid ? base.eq('owner_user_id', uid) : base
+  const { data, error } = await q
   if (error) throw error
   return data || []
 }
 
 export async function getInvoiceByIdWithAppointment(id: string): Promise<(InvoiceRow & { appointments: { customers: { name: string }; services: { name: string } } }) | null> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase
+  const uid = await getUid()
+  const base = supabase
     .from('invoices')
     .select(`
       id,
@@ -126,8 +156,9 @@ export async function getInvoiceByIdWithAppointment(id: string): Promise<(Invoic
       pdf_url,
       appointments ( customers (name), services (name) )
     `)
-    .eq('id', id)
-    .single() as any
+    .eq('id', id) as any
+  const q = uid ? base.eq('owner_user_id', uid) : base
+  const { data, error } = await q.single()
   if (error) throw error
   return data || null
 }
@@ -135,17 +166,21 @@ export async function getInvoiceByIdWithAppointment(id: string): Promise<(Invoic
 export async function getInvoicesByAppointmentIds(ids: string[]): Promise<{ appointment_id: string }[]> {
   if (!supabase) throw new Error('Supabase não configurado')
   if (!ids || ids.length === 0) return []
-  const { data, error } = await supabase
+  const uid = await getUid()
+  const base = supabase
     .from('invoices')
     .select('appointment_id')
     .in('appointment_id', ids as any)
+  const q = uid ? base.eq('owner_user_id', uid) : base
+  const { data, error } = await q
   if (error) throw error
   return (data || []) as any
 }
 
 export async function createInvoice(payload: Database['public']['Tables']['invoices']['Insert']): Promise<InvoiceRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('invoices').insert([payload]).select('*').single()
+  const withUid = await withOwner(payload as any)
+  const { data, error } = await supabase.from('invoices').insert([withUid]).select('*').single()
   if (error) throw error
   return data as InvoiceRow
 }
@@ -164,9 +199,12 @@ export async function updateInvoiceStatus(id: string, status: InvoiceRow['status
 
 export async function getAppointmentsWithRelations(): Promise<(AppointmentRow & { customers: { name: string; phone: string }; services: { name: string; duration_minutes: number } })[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase
+  const uid = await getUid()
+  const base = supabase
     .from('appointments')
     .select(`*, customers (name, phone), services (name, duration_minutes)`) as any
+  const q = uid ? base.eq('owner_user_id', uid) : base
+  const { data, error } = await q
   if (error) throw error
   return data || []
 }
@@ -179,30 +217,38 @@ export async function deleteAppointment(id: string): Promise<void> {
 
 export async function getAppointments(): Promise<AppointmentRow[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('appointments').select('*')
+  const uid = await getUid()
+  const base = supabase.from('appointments').select('*')
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
   return data || []
 }
 
 export async function createAppointment(payload: AppointmentInsert): Promise<AppointmentRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('appointments').insert([payload]).select('*').single()
+  const withUid = await withOwner(payload as any)
+  const { data, error } = await supabase.from('appointments').insert([withUid]).select('*').single()
   if (error) throw error
   return data as AppointmentRow
 }
 
 export async function updateAppointment(id: string, payload: AppointmentUpdate): Promise<AppointmentRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('appointments').update(payload).eq('id', id).select('*').single()
+  const uid = await getUid()
+  const base = supabase.from('appointments').update(payload).eq('id', id)
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid).select('*').single() : base.select('*').single())
   if (error) throw error
   return data as AppointmentRow
 }
 
 export async function getAppointmentsForCalendar(): Promise<(AppointmentRow & { customers: { name: string; phone: string; email: string }; services: { name: string; duration_minutes: number } })[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase
+  const uid = await getUid()
+  const base = supabase
     .from('appointments')
     .select(`*, customers (name, phone, email), services (name, duration_minutes)`) as any
+  const q = uid ? base.eq('owner_user_id', uid) : base
+  const { data, error } = await q
   if (error) throw error
   return data || []
 }
@@ -229,6 +275,10 @@ export async function getCashflowSummary(month?: string): Promise<CashflowSummar
   let txQuery = supabase
     .from('cashflow_transactions')
     .select('id, type, category, amount, transaction_date, client_id') as any
+  {
+    const uid = await getUid()
+    if (uid) txQuery = txQuery.eq('owner_user_id', uid)
+  }
 
   if (startDate && nextMonthDate) {
     txQuery = txQuery.gte('transaction_date', startDate).lt('transaction_date', nextMonthDate)
@@ -259,10 +309,12 @@ export async function getCashflowSummary(month?: string): Promise<CashflowSummar
     .map((t: any) => t.client_id)))
 
   if (clientIds.length > 0) {
-    const { data: clients } = await supabase
+    const uid = await getUid()
+    const base = supabase
       .from('customers')
       .select('id, name')
       .in('id', clientIds as any)
+    const { data: clients } = await (uid ? base.eq('owner_user_id', uid) : base)
 
     const totals: Record<string, number> = {}
     ;(transactions || [])
@@ -298,9 +350,10 @@ export async function createCashflowExpense(input: { category: string; amount: n
     description: input.description || null,
   }
   if (!payload.amount || payload.amount <= 0) throw new Error('Valor inválido')
+  const withUid = await withOwner(payload as any)
   const { data, error } = await supabase
     .from('cashflow_transactions')
-    .insert(payload)
+    .insert(withUid)
     .select('*')
     .single()
   if (error) throw error
@@ -309,27 +362,35 @@ export async function createCashflowExpense(input: { category: string; amount: n
 
 export async function getEmployees(): Promise<EmployeeRow[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('employees').select('*')
+  const uid = await getUid()
+  const base = supabase.from('employees').select('*')
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
   return data || []
 }
 
 export async function getEmployeeWorkRecords(employeeId: string): Promise<EmployeeWorkRecordRow[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('employee_work_records').select('*').eq('employeeId', employeeId)
+  const uid = await getUid()
+  const base = supabase.from('employee_work_records').select('*').eq('employeeId', employeeId)
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
   return data || []
 }
 
 export async function getCompany(): Promise<CompanyRow | null> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data } = await supabase.from('company').select('*').single()
+  const uid = await getUid()
+  const base = supabase.from('company').select('*')
+  const { data } = await (uid ? base.eq('owner_user_id', uid).single() : base.single())
   return data || null
 }
 
 export async function getEmployeeById(id: string): Promise<EmployeeRow | null> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('employees').select('*').eq('id', id).single()
+  const uid = await getUid()
+  const base = supabase.from('employees').select('*').eq('id', id)
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid).single() : base.single())
   if (error) throw error
   return data || null
 }
@@ -340,7 +401,8 @@ export async function createEmployee(payload: EmployeeInsert): Promise<void> {
   if (!cleanCpf) throw new Error('CPF inválido')
   const { data: existing } = await supabase.from('employees').select('id').eq('cpf', cleanCpf).limit(1)
   if (existing && existing.length > 0) throw new Error('CPF já cadastrado')
-  const { error } = await supabase.from('employees').insert([{ ...payload, cpf: cleanCpf }])
+  const withUid = await withOwner({ ...payload, cpf: cleanCpf } as any)
+  const { error } = await supabase.from('employees').insert([withUid])
   if (error) throw error
 }
 
@@ -351,13 +413,17 @@ export async function updateEmployee(id: string, payload: EmployeeUpdate): Promi
     const { data: existing } = await supabase.from('employees').select('id').eq('cpf', cleanCpf).neq('id', id).limit(1)
     if (existing && existing.length > 0) throw new Error('CPF já cadastrado')
   }
-  const { error } = await supabase.from('employees').update({ ...payload, cpf: cleanCpf || payload.cpf }).eq('id', id)
+  const uid = await getUid()
+  const base = supabase.from('employees').update({ ...payload, cpf: cleanCpf || payload.cpf }).eq('id', id)
+  const { error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
 }
 
 export async function deleteEmployee(id: string): Promise<void> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { error } = await supabase.from('employees').delete().eq('id', id)
+  const uid = await getUid()
+  const base = supabase.from('employees').delete().eq('id', id)
+  const { error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
 }
 
@@ -372,7 +438,8 @@ export async function addEmployeeWorkRecord(input: { employeeId: string; workDat
     notes: input.notes || null,
     paid: false,
   }
-  const { error } = await supabase.from('employee_work_records').insert([payload])
+  const withUid = await withOwner(payload as any)
+  const { error } = await supabase.from('employee_work_records').insert([withUid])
   if (error) throw error
 }
 
@@ -401,11 +468,13 @@ export async function saveCompany(payload: CompanyRow & { id?: string }): Promis
     updated_at: new Date().toISOString(),
   }
   if (payload.id) {
-    const { data, error } = await supabase.from('company').update(base).eq('id', payload.id).select('*').single()
+    const withUid = await withOwner(base as any)
+    const { data, error } = await supabase.from('company').update(withUid).eq('id', payload.id).select('*').single()
     if (error) throw error
     return data as CompanyRow
   } else {
-    const { data, error } = await supabase.from('company').insert(base).select('*').single()
+    const withUid = await withOwner(base as any)
+    const { data, error } = await supabase.from('company').insert(withUid).select('*').single()
     if (error) throw error
     return data as CompanyRow
   }
@@ -414,9 +483,11 @@ export async function saveCompany(payload: CompanyRow & { id?: string }): Promis
 // Orçamentos (quotes)
 export async function getQuotes(): Promise<(QuoteRow & { customers?: { name: string; phone: string }; services?: { name: string } })[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase
+  const uid = await getUid()
+  const base = supabase
     .from('quotes')
     .select(`*, customers (name, phone), services (name)`) as any
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) {
     const code = (error as any).code
     if (code === 'PGRST205') return []
@@ -427,11 +498,12 @@ export async function getQuotes(): Promise<(QuoteRow & { customers?: { name: str
 
 export async function getQuoteById(id: string): Promise<(QuoteRow & { customers?: any; services?: any; quote_items: QuoteItemRow[]; quote_images: QuoteImageRow[] }) | null> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase
+  const uid = await getUid()
+  const base = supabase
     .from('quotes')
     .select(`*, customers (*), services (*), quote_items (*), quote_images (*)`)
     .eq('id', id)
-    .single()
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid).single() : base.single())
   if (error) {
     const code = (error as any).code
     if (code === 'PGRST205') return null
@@ -442,60 +514,75 @@ export async function getQuoteById(id: string): Promise<(QuoteRow & { customers?
 
 export async function createQuote(payload: QuoteInsert): Promise<QuoteRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('quotes').insert([payload]).select('*').single()
+  const withUid = await withOwner(payload as any)
+  const { data, error } = await supabase.from('quotes').insert([withUid]).select('*').single()
   if (error) throw error
   return data as QuoteRow
 }
 
 export async function updateQuote(id: string, payload: QuoteUpdate): Promise<QuoteRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('quotes').update(payload).eq('id', id).select('*').single()
+  const uid = await getUid()
+  const base = supabase.from('quotes').update(payload).eq('id', id)
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid).select('*').single() : base.select('*').single())
   if (error) throw error
   return data as QuoteRow
 }
 
 export async function deleteQuote(id: string): Promise<void> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { error } = await supabase.from('quotes').delete().eq('id', id)
+  const uid = await getUid()
+  const base = supabase.from('quotes').delete().eq('id', id)
+  const { error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
 }
 
 export async function addQuoteItem(payload: QuoteItemInsert): Promise<QuoteItemRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('quote_items').insert([payload]).select('*').single()
+  const withUid = await withOwner(payload as any)
+  const { data, error } = await supabase.from('quote_items').insert([withUid]).select('*').single()
   if (error) throw error
   return data as QuoteItemRow
 }
 
 export async function updateQuoteItem(id: string, payload: QuoteItemUpdate): Promise<QuoteItemRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('quote_items').update(payload).eq('id', id).select('*').single()
+  const uid = await getUid()
+  const base = supabase.from('quote_items').update(payload).eq('id', id)
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid).select('*').single() : base.select('*').single())
   if (error) throw error
   return data as QuoteItemRow
 }
 
 export async function deleteQuoteItem(id: string): Promise<void> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { error } = await supabase.from('quote_items').delete().eq('id', id)
+  const uid = await getUid()
+  const base = supabase.from('quote_items').delete().eq('id', id)
+  const { error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
 }
 
 export async function addQuoteImage(payload: QuoteImageInsert): Promise<QuoteImageRow> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('quote_images').insert([payload]).select('*').single()
+  const withUid = await withOwner(payload as any)
+  const { data, error } = await supabase.from('quote_images').insert([withUid]).select('*').single()
   if (error) throw error
   return data as QuoteImageRow
 }
 
 export async function deleteQuoteImage(id: string): Promise<void> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { error } = await supabase.from('quote_images').delete().eq('id', id)
+  const uid = await getUid()
+  const base = supabase.from('quote_images').delete().eq('id', id)
+  const { error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
 }
 
 export async function listQuoteImages(quoteId: string): Promise<QuoteImageRow[]> {
   if (!supabase) throw new Error('Supabase não configurado')
-  const { data, error } = await supabase.from('quote_images').select('*').eq('quote_id', quoteId)
+  const uid = await getUid()
+  const base = supabase.from('quote_images').select('*').eq('quote_id', quoteId)
+  const { data, error } = await (uid ? base.eq('owner_user_id', uid) : base)
   if (error) throw error
   return data || []
 }

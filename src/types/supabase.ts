@@ -17,6 +17,7 @@ export type Database = {
           phone: string
           address: Json
           notes: string | null
+          owner_user_id: string | null
           created_at: string
           updated_at: string
         }
@@ -27,6 +28,7 @@ export type Database = {
           phone: string
           address: Json
           notes?: string | null
+          owner_user_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -37,6 +39,7 @@ export type Database = {
           phone?: string
           address?: Json
           notes?: string | null
+          owner_user_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -50,6 +53,7 @@ export type Database = {
           description: string | null
           duration_minutes: number
           active: boolean
+          owner_user_id: string | null
           created_at: string
         }
         Insert: {
@@ -59,6 +63,7 @@ export type Database = {
           description?: string | null
           duration_minutes?: number
           active?: boolean
+          owner_user_id?: string | null
           created_at?: string
         }
         Update: {
@@ -68,6 +73,7 @@ export type Database = {
           description?: string | null
           duration_minutes?: number
           active?: boolean
+          owner_user_id?: string | null
           created_at?: string
         }
         Relationships: []
@@ -82,6 +88,7 @@ export type Database = {
           status: 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
           price: number
           notes: string | null
+          owner_user_id: string | null
           created_at: string
           updated_at: string
           series_id: string | null
@@ -95,6 +102,7 @@ export type Database = {
           status?: 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
           price: number
           notes?: string | null
+          owner_user_id?: string | null
           created_at?: string
           updated_at?: string
           series_id?: string | null
@@ -108,6 +116,7 @@ export type Database = {
           status?: 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
           price?: number
           notes?: string | null
+          owner_user_id?: string | null
           created_at?: string
           updated_at?: string
           series_id?: string | null
@@ -145,6 +154,7 @@ export type Database = {
           estimated_end_date: string | null
           status: 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
           notes: string | null
+          owner_user_id: string | null
           created_at: string
           updated_at: string
         }
@@ -156,6 +166,7 @@ export type Database = {
           estimated_end_date?: string | null
           status?: 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
           notes?: string | null
+          owner_user_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -167,6 +178,7 @@ export type Database = {
           estimated_end_date?: string | null
           status?: 'scheduled' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
           notes?: string | null
+          owner_user_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -199,6 +211,7 @@ export type Database = {
           total: number
           status: 'pending' | 'paid' | 'overdue' | 'cancelled'
           pdf_url: string | null
+          owner_user_id: string | null
           created_at: string
         }
         Insert: {
@@ -212,6 +225,7 @@ export type Database = {
           total: number
           status?: 'pending' | 'paid' | 'overdue' | 'cancelled'
           pdf_url?: string | null
+          owner_user_id?: string | null
           created_at?: string
         }
         Update: {
@@ -225,6 +239,7 @@ export type Database = {
           total?: number
           status?: 'pending' | 'paid' | 'overdue' | 'cancelled'
           pdf_url?: string | null
+          owner_user_id?: string | null
           created_at?: string
         }
         Relationships: [
@@ -257,6 +272,7 @@ export type Database = {
           created_at: string
           updated_at: string
           created_by: string | null
+          owner_user_id: string | null
           title: string
           initial_report: string | null
           activities: Json | null
@@ -287,6 +303,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
           created_by?: string | null
+          owner_user_id?: string | null
           title: string
           initial_report?: string | null
           activities?: Json | null
@@ -317,6 +334,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
           created_by?: string | null
+          owner_user_id?: string | null
           title?: string
           initial_report?: string | null
           activities?: Json | null
@@ -351,18 +369,21 @@ export type Database = {
           quote_id: string
           url: string
           caption: string | null
+          owner_user_id: string | null
         }
         Insert: {
           id?: string
           quote_id: string
           url: string
           caption?: string | null
+          owner_user_id?: string | null
         }
         Update: {
           id?: string
           quote_id?: string
           url?: string
           caption?: string | null
+          owner_user_id?: string | null
         }
         Relationships: [
           {
@@ -383,6 +404,7 @@ export type Database = {
           unit: string | null
           unit_price: number
           total: number
+          owner_user_id: string | null
         }
         Insert: {
           id?: string
@@ -392,6 +414,7 @@ export type Database = {
           unit?: string | null
           unit_price: number
           total: number
+          owner_user_id?: string | null
         }
         Update: {
           id?: string
@@ -401,6 +424,7 @@ export type Database = {
           unit?: string | null
           unit_price?: number
           total?: number
+          owner_user_id?: string | null
         }
         Relationships: [
           {
@@ -422,6 +446,7 @@ export type Database = {
           client_id: string | null
           invoice_id: string | null
           description: string | null
+          owner_user_id: string | null
           created_at: string
         }
         Insert: {
@@ -433,6 +458,7 @@ export type Database = {
           client_id?: string | null
           invoice_id?: string | null
           description?: string | null
+          owner_user_id?: string | null
           created_at?: string
         }
         Update: {
@@ -444,6 +470,7 @@ export type Database = {
           client_id?: string | null
           invoice_id?: string | null
           description?: string | null
+          owner_user_id?: string | null
           created_at?: string
         }
         Relationships: [
@@ -473,6 +500,7 @@ export type Database = {
           address: Json
           bank_info: Json | null
           logo_url: string | null
+          owner_user_id: string | null
           updated_at: string
         }
         Insert: {
@@ -484,6 +512,7 @@ export type Database = {
           address: Json
           bank_info?: Json | null
           logo_url?: string | null
+          owner_user_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -495,6 +524,7 @@ export type Database = {
           address?: Json
           bank_info?: Json | null
           logo_url?: string | null
+          owner_user_id?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -512,6 +542,7 @@ export type Database = {
           dailyRate: number
           active: boolean
           notes: string | null
+          owner_user_id: string | null
           createdAt: string
           updatedAt: string
         }
@@ -527,6 +558,7 @@ export type Database = {
           dailyRate?: number
           active?: boolean
           notes?: string | null
+          owner_user_id?: string | null
           createdAt?: string
           updatedAt?: string
         }
@@ -542,6 +574,7 @@ export type Database = {
           dailyRate?: number
           active?: boolean
           notes?: string | null
+          owner_user_id?: string | null
           createdAt?: string
           updatedAt?: string
         }
@@ -557,6 +590,7 @@ export type Database = {
           totalAmount: number
           notes: string | null
           paid: boolean
+          owner_user_id: string | null
           createdAt: string
           updatedAt: string
         }
@@ -569,6 +603,7 @@ export type Database = {
           totalAmount: number
           notes?: string | null
           paid?: boolean
+          owner_user_id?: string | null
           createdAt?: string
           updatedAt?: string
         }
@@ -581,6 +616,7 @@ export type Database = {
           totalAmount?: number
           notes?: string | null
           paid?: boolean
+          owner_user_id?: string | null
           createdAt?: string
           updatedAt?: string
         }

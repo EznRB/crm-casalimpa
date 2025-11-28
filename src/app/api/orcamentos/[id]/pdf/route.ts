@@ -22,13 +22,14 @@ export async function GET(
         quote_images (* )
       `)
       .eq('id', quoteId)
+      .eq('owner_user_id', user.id)
       .single()
 
     if (quoteError || !quote) {
       return NextResponse.json({ error: 'Orçamento não encontrado' }, { status: 404 })
     }
 
-    const { data: company } = await supabase.from('company').select('*').single()
+    const { data: company } = await supabase.from('company').select('*').eq('owner_user_id', user.id).single()
 
     const html = generateQuoteHTML(quote, company)
 

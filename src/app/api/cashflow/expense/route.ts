@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       amount,
       transaction_date: date,
       description,
+      owner_user_id: user.id,
     })
     .select('*')
     .single()
@@ -30,4 +31,3 @@ export async function POST(request: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data, { status: 201 })
 }
-

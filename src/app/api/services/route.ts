@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from('services')
     .select('*')
+    .eq('owner_user_id', user.id)
     .order('name', { ascending: true })
   if (error) {
     logger.error('services_list_failed', { ...ctx, err: error.message })
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
   }
   const body = await request.json()
-  const { data, error } = await supabase.from('services').insert([body]).select('*').single()
+  const { data, error } = await supabase.from('services').insert([{ ...body, owner_user_id: user.id }]).select('*').single()
   if (error) {
     logger.error('services_create_failed', { ...ctx, err: error.message })
     return NextResponse.json({ error: error.message }, { status: 400 })

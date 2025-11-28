@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from('customers')
     .select('*')
+    .eq('owner_user_id', user.id)
     .order('name', { ascending: true })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
   const body = await request.json()
-  const { data, error } = await supabase.from('customers').insert([body]).select('*').single()
+  const { data, error } = await supabase.from('customers').insert([{ ...body, owner_user_id: user.id }]).select('*').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json(data, { status: 201 })
 }

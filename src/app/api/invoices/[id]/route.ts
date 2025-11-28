@@ -9,6 +9,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     .from('invoices')
     .select(`*, appointments(*, customers(name), services(name))`)
     .eq('id', params.id)
+    .eq('owner_user_id', user.id)
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 404 })
@@ -27,6 +28,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     .from('invoices')
     .update(updateData)
     .eq('id', params.id)
+    .eq('owner_user_id', user.id)
     .select('*')
     .single()
 
@@ -38,6 +40,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       .from('invoices')
       .select('id, total, issue_date, appointment_id')
       .eq('id', params.id)
+      .eq('owner_user_id', user.id)
       .single()
 
     let clientId: string | null = null
@@ -46,6 +49,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         .from('appointments')
         .select('customer_id')
         .eq('id', inv.appointment_id)
+        .eq('owner_user_id', user.id)
         .single()
       clientId = appt?.customer_id || null
     }
@@ -60,6 +64,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         client_id: clientId,
         invoice_id: inv?.id || null,
         description: 'Recebimento de fatura',
+        owner_user_id: user.id
       })
   }
   return NextResponse.json(data)

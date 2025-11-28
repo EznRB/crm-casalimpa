@@ -39,6 +39,7 @@ export async function GET(
         )
       `)
       .eq('id', invoiceId)
+      .eq('owner_user_id', user.id)
       .single()
 
     if (invoiceError || !invoice) {
@@ -53,6 +54,7 @@ export async function GET(
     const { data: company } = await supabase
       .from('company')
       .select('*')
+      .eq('owner_user_id', user.id)
       .single()
 
     // Generate HTML for the invoice

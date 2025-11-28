@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase
     .from('invoices')
     .select(`*, appointments(id, appointment_date, customers(name), services(name))`)
+    .eq('owner_user_id', user.id)
     .order('issue_date', { ascending: false })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   const { data, error } = await supabase
     .from('invoices')
-    .insert([{ appointment_id: appointmentId, invoice_number: invoiceNumber, subtotal: subtotalValue, tax: taxValue, total }])
+    .insert([{ appointment_id: appointmentId, invoice_number: invoiceNumber, subtotal: subtotalValue, tax: taxValue, total, owner_user_id: user.id }])
     .select('*')
     .single()
 

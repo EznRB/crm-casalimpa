@@ -12,6 +12,7 @@ export async function GET(
     .from('employee_work_records')
     .select('*')
     .eq('employeeId', params.id)
+    .eq('owner_user_id', user.id)
     .order('workDate', { ascending: false })
 
   if (error) {
@@ -35,7 +36,7 @@ export async function POST(
 
     const { data, error } = await supabase
       .from('employee_work_records')
-      .insert([{ employeeId: params.id, workDate, workDays, dailyRate, totalAmount, notes }])
+      .insert([{ employeeId: params.id, workDate, workDays, dailyRate, totalAmount, notes, owner_user_id: user.id }])
       .select('*')
       .single()
 

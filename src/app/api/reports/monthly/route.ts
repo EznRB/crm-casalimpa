@@ -11,9 +11,11 @@ export async function GET(request: NextRequest) {
   let jobsQuery = supabase
     .from('appointments')
     .select('id, appointment_date, status, price') as any
+    .eq('owner_user_id', user.id)
   let invoicesQuery = supabase
     .from('invoices')
     .select('id, issue_date, status, total') as any
+    .eq('owner_user_id', user.id)
 
   if (month) {
     jobsQuery = jobsQuery.like('appointment_date', `${month}%`)

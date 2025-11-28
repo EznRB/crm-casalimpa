@@ -15,6 +15,7 @@ export async function PUT(
       .from('employee_work_records')
       .update({ paid })
       .eq('id', params.id)
+      .eq('owner_user_id', user.id)
       .select('*')
       .single()
 
@@ -40,7 +41,8 @@ export async function PUT(
           category: 'wages',
           amount: (data as any).totalAmount || 0,
           transaction_date: ((data as any).workDate || new Date().toISOString()).slice(0, 10),
-          description: employeeName ? `Pagamento de diária: ${employeeName}` : 'Pagamento de diária'
+          description: employeeName ? `Pagamento de diária: ${employeeName}` : 'Pagamento de diária',
+          owner_user_id: user.id
         })
     }
     return NextResponse.json(data)
@@ -57,7 +59,7 @@ export async function DELETE(
   const { supabase, user } = await getAuthUser(request)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
-  const { error } = await supabase.from('employee_work_records').delete().eq('id', params.id)
+  const { error } = await supabase.from('employee_work_records').delete().eq('id', params.id).eq('owner_user_id', user.id)
   if (error) {
     console.error('Erro ao excluir registro de trabalho:', error)
     return NextResponse.json({ error: 'Erro ao excluir registro de trabalho' }, { status: 500 })

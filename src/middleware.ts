@@ -70,14 +70,6 @@ export async function updateSession(request: NextRequest) {
   supabaseResponse.headers.set('x-frame-options', 'DENY')
   supabaseResponse.headers.set('x-content-type-options', 'nosniff')
   supabaseResponse.headers.set('referrer-policy', 'no-referrer')
-  supabaseResponse.headers.set(
-    'content-security-policy',
-    "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://*.supabase.co https://api-inference.huggingface.co; font-src 'self'; frame-ancestors 'none'"
-  )
-  supabaseResponse.headers.set(
-    'permissions-policy',
-    'camera=(), microphone=(), geolocation=()'
-  )
   return supabaseResponse
 }
 export async function middleware(request: NextRequest) {
@@ -101,11 +93,6 @@ export async function middleware(request: NextRequest) {
     res.headers.set('x-frame-options', 'DENY')
     res.headers.set('x-content-type-options', 'nosniff')
     res.headers.set('referrer-policy', 'no-referrer')
-    res.headers.set(
-      'content-security-policy',
-      "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' https://*.supabase.co https://api-inference.huggingface.co; font-src 'self'; frame-ancestors 'none'"
-    )
-    res.headers.set('permissions-policy', 'camera=(), microphone=(), geolocation=()')
     return res
   }
   return updateSession(request)

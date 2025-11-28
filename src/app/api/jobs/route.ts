@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from('appointments')
     .select(`*, customers(name, phone), services(name, duration_minutes)`) as any
+    .eq('owner_user_id', user.id)
 
   if (from && to) {
     query = query.gte('appointment_date', from).lte('appointment_date', to)
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json()
   const { data, error } = await supabase
     .from('appointments')
-    .insert([body])
+    .insert([{ ...body, owner_user_id: user.id }])
     .select(`*, customers(name, phone), services(name, duration_minutes)`) 
     .single()
 

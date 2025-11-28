@@ -20,6 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     .from('appointments')
     .select('id, appointment_date, appointment_time, status, price, service_id, services(name)')
     .eq('customer_id', params.id) as any
+    .eq('owner_user_id', user.id)
 
   if (month) {
     query = query.like('appointment_date', `${month}%`)

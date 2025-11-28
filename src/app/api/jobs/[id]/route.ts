@@ -10,6 +10,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     .from('appointments')
     .update(body)
     .eq('id', params.id)
+    .eq('owner_user_id', user.id)
     .select('*')
     .single()
 
@@ -21,7 +22,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   const { supabase, user } = await getAuthUser(request)
   if (!user) return NextResponse.json({ error: 'Não autenticado' }, { status: 401 })
 
-  const { error } = await supabase.from('appointments').delete().eq('id', params.id)
+  const { error } = await supabase.from('appointments').delete().eq('id', params.id).eq('owner_user_id', user.id)
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })
   return NextResponse.json({ success: true })
 }
