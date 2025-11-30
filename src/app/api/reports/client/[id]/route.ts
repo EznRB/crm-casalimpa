@@ -18,9 +18,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
   let query = supabase
     .from('appointments')
-    .select('id, appointment_date, appointment_time, status, price, service_id, services(name)')
-    .eq('customer_id', params.id) as any
-    .eq('owner_user_id', user.id)
+    .select('id, appointment_date, appointment_time, status, price, service_id, services(name)') as any
+  query = query.eq('customer_id', params.id)
+  query = query.eq('owner_user_id', user.id)
 
   if (month) {
     query = query.like('appointment_date', `${month}%`)

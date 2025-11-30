@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   let txQuery = supabase
     .from('cashflow_transactions')
     .select('id, type, category, amount, transaction_date, client_id') as any
-    .eq('owner_user_id', user.id)
+  txQuery = txQuery.eq('owner_user_id', user.id)
 
   if (startDate && nextMonthDate) {
     txQuery = txQuery.gte('transaction_date', startDate).lt('transaction_date', nextMonthDate)
@@ -56,11 +56,12 @@ export async function GET(request: NextRequest) {
     .map((t: any) => t.client_id)))
 
   if (clientIds.length > 0) {
-    const { data: clients } = await supabase
+    let clientsQuery = supabase
       .from('customers')
       .select('id, name')
-      .in('id', clientIds as any)
-      .eq('owner_user_id', user.id)
+      .in('id', clientIds as any) as any
+    clientsQuery = clientsQuery.eq('owner_user_id', user.id)
+    const { data: clients } = await clientsQuery
 
     const totals: Record<string, number> = {}
     ;(transactions || [])

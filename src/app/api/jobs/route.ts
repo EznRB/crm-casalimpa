@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from('appointments')
     .select(`*, customers(name, phone), services(name, duration_minutes)`) as any
-    .eq('owner_user_id', user.id)
+  query = query.eq('owner_user_id', user.id)
 
   if (from && to) {
     query = query.gte('appointment_date', from).lte('appointment_date', to)
