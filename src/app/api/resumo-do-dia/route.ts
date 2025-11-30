@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
 
     const workRecords = await prisma.employeeWorkRecord.findMany({ where: { workDate } })
     const funcionariosPresentes = workRecords.length
-    const custoDiarias = workRecords.reduce((sum, r) => sum + Number(r.totalAmount || 0), 0)
-    const tempoTotalHoras = workRecords.reduce((sum, r) => sum + Number(r.workDays || 0) * 8, 0)
+    const custoDiarias = workRecords.reduce((sum: number, r: any) => sum + Number(r.totalAmount || 0), 0)
+    const tempoTotalHoras = workRecords.reduce((sum: number, r: any) => sum + Number(r.workDays || 0) * 8, 0)
 
     const expensesTotalRow: Array<{ total: number }> = await prisma.$queryRaw`
       SELECT COALESCE(SUM(amount),0) AS total
@@ -72,4 +72,3 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error?.message || 'Erro ao resumir dia' }, { status: 400 })
   }
 }
-

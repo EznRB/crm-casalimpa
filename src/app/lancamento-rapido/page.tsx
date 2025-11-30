@@ -57,7 +57,7 @@ export default function LancamentoRapidoPage() {
       try {
         const res = await fetch('/api/employees')
         const data = await res.json()
-        setAllEmployees((data || []).map((e: any) => ({ id: e.id, name: e.name, dailyRate: e.dailyRate })).sort((a, b) => (a.name || '').localeCompare(b.name || '')))
+        setAllEmployees((data || []).map((e: any) => ({ id: e.id, name: e.name, dailyRate: e.dailyRate })).sort((a: any, b: any) => (a.name || '').localeCompare(b.name || '')))
       } catch {}
     })()
   }, [])
@@ -283,12 +283,4 @@ function mergeVoiceIntoState(date: string, voice: any, setters: { setEmployees: 
   }
 }
 
-async function sendVoicePayload(date: string, voice: any) {
-  const payload = { date, ...voice }
-  const res = await fetch('/api/lancamento-rapido', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  })
-  if (!res.ok) throw new Error('Falha ao lançar por voz')
-}
+// sendVoicePayload removido: agora importado de '@/lib/voice'

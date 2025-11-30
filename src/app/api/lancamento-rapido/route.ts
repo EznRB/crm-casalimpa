@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
 
     const workDate = new Date(`${date}T00:00:00.000Z`)
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       let funcionariosCount = 0
       for (const f of funcionarios) {
         const existing = await tx.employeeWorkRecord.findFirst({ where: { employeeId: f.id, workDate } })
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
     if (!lastDate) return NextResponse.json({ date: null, employees: [], expenses: [], materials: [], statuses: [], observations: [] })
 
     const wr = await prisma.employeeWorkRecord.findMany({ where: { workDate: new Date(`${lastDate}T00:00:00.000Z`) } })
-    const employees = wr.map((r) => ({ employeeId: r.employeeId, workDays: Number(r.workDays || 0), dailyRate: Number(r.dailyRate || 0), notes: r.notes || '' }))
+    const employees = wr.map((r: any) => ({ employeeId: r.employeeId, workDays: Number(r.workDays || 0), dailyRate: Number(r.dailyRate || 0), notes: r.notes || '' }))
     const { data: exps } = await supabase
       .from('cashflow_transactions')
       .select('description, amount, category')

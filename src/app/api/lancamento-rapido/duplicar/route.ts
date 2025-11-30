@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     }
 
     const wr = await prisma.employeeWorkRecord.findMany({ where: { workDate: new Date(`${lastDate}T00:00:00.000Z`) } })
-    const funcionarios = wr.map((r) => ({ id: r.employeeId, diaria: Number(r.dailyRate || 0) }))
+    const funcionarios = wr.map((r: any) => ({ id: r.employeeId, diaria: Number(r.dailyRate || 0) }))
 
     const { data: exps } = await supabase
       .from('cashflow_transactions')
@@ -79,4 +79,3 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error?.message || 'Erro ao duplicar' }, { status: 400 })
   }
 }
-
