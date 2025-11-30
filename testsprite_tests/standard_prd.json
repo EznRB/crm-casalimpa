@@ -1,0 +1,195 @@
+{
+  "meta": {
+    "project": "CRM Casa Limpa",
+    "date": "2025-11-19",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "CRM Casa Limpa is a comprehensive customer relationship management system tailored for a cleaning service company. It centralizes client management, service scheduling, team management, and billing processes, aiming to improve operational efficiency and service quality.",
+  "core_goals": [
+    "Centralize client and service management to streamline operations.",
+    "Ensure efficient scheduling and resource allocation with conflict prevention.",
+    "Automate billing and financial tracking for accuracy and timely processing.",
+    "Provide role-based access and secure data management.",
+    "Deliver insightful reporting to support business decisions.",
+    "Maintain high system availability and performance within business hours."
+  ],
+  "key_features": [
+    "Client Management: CRUD operations, multi-address and contact associations, preferences and notes.",
+    "Scheduling and Service Orders: Calendar view, team allocation with availability checks, order status tracking and notifications.",
+    "Team Management: Employee profiles, skill and availability management, automated allocation based on competencies and location.",
+    "Financial Management: Invoice creation from orders, payment marking and reconciliation, receipt issuance, PDF exports.",
+    "Reports: Monthly and client-based reports with CSV/PDF export functionality.",
+    "Authentication and Authorization: OAuth login, role-based access control for Admin, Operator, Financial, and Technical profiles.",
+    "Chatbot Integration: Assist users in generating budgets and other interactions.",
+    "System Health Monitoring: Endpoint for health checks and performance logging.",
+    "UI/UX: Intuitive dashboard, responsive layouts, dark/light theme toggle."
+  ],
+  "user_flow_summary": [
+    "Service Scheduling Flow: Operator selects or registers a client, defines service details and schedule, system validates team availability and suggests allocation, order is confirmed and notifications dispatched.",
+    "Execution and Completion Flow: Team starts order, records usage and incidents, completes service and system generates invoice, sends to client.",
+    "Rescheduling and Cancellation Flow: Operator initiates changes, system revalidates resource availability, updates records with history maintained."
+  ],
+  "validation_criteria": [
+    "Average scheduling time under 1 minute to improve efficiency.",
+    "Reduction of scheduling conflicts by 80% through validation mechanisms.",
+    "Correct calculation and issuance of invoices without errors.",
+    "System availability of 99% during business hours to ensure uptime.",
+    "Page load times for primary features below 2 seconds under standard network conditions.",
+    "Proper role-based authorization enforcing data security and privacy."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "TypeScript",
+      "Next.js (App Router)",
+      "React",
+      "Supabase",
+      "Prisma"
+    ],
+    "features": [
+      {
+        "name": "Autenticação",
+        "description": "Fluxo de login e callback OAuth com Supabase.",
+        "files": [
+          "src/app/login/page.tsx",
+          "src/hooks/useAuth.ts",
+          "src/app/auth/callback/page.tsx",
+          "src/middleware.ts"
+        ]
+      },
+      {
+        "name": "Clientes",
+        "description": "Listagem, criação e edição de clientes.",
+        "files": [
+          "src/app/clientes/page.tsx",
+          "src/app/clientes/novo/page.tsx",
+          "src/app/clientes/[id]/editar/page.tsx",
+          "src/app/api/clients/route.ts",
+          "src/app/api/clients/[id]/route.ts"
+        ]
+      },
+      {
+        "name": "Agendamentos",
+        "description": "CRUD de agendamentos com visualização em calendário.",
+        "files": [
+          "src/app/agendamentos/page.tsx",
+          "src/app/agendamentos/novo/page.tsx",
+          "src/app/agendamentos/[id]/editar/page.tsx",
+          "src/components/CalendarView.tsx",
+          "src/app/api/jobs/route.ts",
+          "src/app/api/jobs/[id]/route.ts"
+        ]
+      },
+      {
+        "name": "Orçamentos",
+        "description": "Gestão de orçamentos com geração de PDF e chatbot de orçamento.",
+        "files": [
+          "src/app/orcamentos/page.tsx",
+          "src/app/orcamentos/novo/page.tsx",
+          "src/app/orcamentos/[id]/page.tsx",
+          "src/app/api/orcamentos/[id]/pdf/route.ts",
+          "src/app/api/chatbot/budget/route.ts",
+          "src/components/OrcamentoChatbot.tsx"
+        ]
+      },
+      {
+        "name": "Faturas",
+        "description": "Emissão e visualização de faturas com exportação de PDF.",
+        "files": [
+          "src/app/faturas/page.tsx",
+          "src/app/faturas/nova/page.tsx",
+          "src/app/faturas/[id]/page.tsx",
+          "src/app/api/invoices/route.ts",
+          "src/app/api/invoices/[id]/route.ts",
+          "src/app/api/invoices/[id]/pdf/route.ts"
+        ]
+      },
+      {
+        "name": "Funcionários e Registros",
+        "description": "Gestão de funcionários e registros de trabalho.",
+        "files": [
+          "src/app/funcionarios/page.tsx",
+          "src/app/funcionarios/novo/page.tsx",
+          "src/app/funcionarios/[id]/editar/page.tsx",
+          "src/app/funcionarios/[id]/registros/page.tsx",
+          "src/app/api/employees/route.ts",
+          "src/app/api/employees/[id]/route.ts",
+          "src/app/api/employees/work-records/[id]/route.ts",
+          "src/app/api/employees/[id]/work-records/route.ts"
+        ]
+      },
+      {
+        "name": "Serviços",
+        "description": "Cadastro e edição de serviços oferecidos.",
+        "files": [
+          "src/app/servicos/page.tsx",
+          "src/app/servicos/novo/page.tsx",
+          "src/app/servicos/[id]/editar/page.tsx",
+          "src/app/api/services/route.ts",
+          "src/app/api/services/[id]/route.ts"
+        ]
+      },
+      {
+        "name": "Fluxo de Caixa",
+        "description": "Resumo e despesas do fluxo de caixa.",
+        "files": [
+          "src/app/fluxo-caixa/page.tsx",
+          "src/app/api/cashflow/summary/route.ts",
+          "src/app/api/cashflow/expense/route.ts"
+        ]
+      },
+      {
+        "name": "Relatórios",
+        "description": "Relatórios mensais e por cliente, com PDF.",
+        "files": [
+          "src/app/relatorios/page.tsx",
+          "src/app/api/reports/monthly/route.ts",
+          "src/app/api/reports/client/[id]/route.ts",
+          "src/app/api/reports/pdf/route.ts"
+        ]
+      },
+      {
+        "name": "Chatbot",
+        "description": "Widget de chatbot e API de assistente.",
+        "files": [
+          "src/components/ChatbotWidget.tsx",
+          "src/app/api/chatbot/assistant/route.ts",
+          "src/server/chat/tools.ts"
+        ]
+      },
+      {
+        "name": "Infra/Utilitários",
+        "description": "Logger, limites de taxa, provedores de IA e integração com Supabase/Prisma.",
+        "files": [
+          "src/lib/logger.ts",
+          "src/lib/ratelimit.ts",
+          "src/lib/ai/provider.ts",
+          "src/lib/supabase.ts",
+          "src/lib/supabaseServer.ts",
+          "src/lib/prisma.ts",
+          "src/lib/db.ts",
+          "src/types/supabase.ts",
+          "src/types/modules.d.ts"
+        ]
+      },
+      {
+        "name": "UI Base",
+        "description": "Layout geral, navegação, dashboard e temas.",
+        "files": [
+          "src/app/layout.tsx",
+          "src/app/page.tsx",
+          "src/components/Navigation.tsx",
+          "src/components/Dashboard.tsx",
+          "src/components/ThemeToggle.tsx",
+          "src/app/error.tsx"
+        ]
+      },
+      {
+        "name": "Saúde do Sistema",
+        "description": "Endpoint de health-check para monitoramento.",
+        "files": [
+          "src/app/api/health/route.ts"
+        ]
+      }
+    ]
+  }
+}

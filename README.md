@@ -46,6 +46,7 @@ No Vercel, configure os mesmos valores em Project Settings → Environment Varia
 ## Migrações e Seed
 
 ### Migrações (Supabase)
+
 - As migrações SQL estão em `supabase/migrations/*.sql`.
 - Aplique no seu banco Supabase pelo SQL Editor (Dashboard) ou via Supabase CLI.
   - Opção SQL Editor: abra o arquivo `.sql`, copie e execute no editor do Supabase.
@@ -75,3 +76,21 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 ## Deploy
 
 Deploy automático no Vercel configurado via GitHub Actions.
+## Lançamento Rápido
+
+- Página: `/lancamento-rapido` (mobile-first)
+- API principal: `POST /api/lancamento-rapido`
+- Duplicar último dia: `GET /api/lancamento-rapido/duplicar`
+- Speech-to-Text:
+  - Web Speech API no navegador
+  - Opcional: `POST /api/speech/whisper` com `OPENAI_API_KEY`
+
+## Resumo do Dia
+
+- Página: `/resumo-do-dia`
+- API: `GET /api/resumo-do-dia?date=YYYY-MM-DD`
+
+## Deploy
+
+- Configure `DATABASE_URL` e (opcional) `OPENAI_API_KEY`
+- Commit e push para GitHub para acionar pipeline (ex.: Vercel)

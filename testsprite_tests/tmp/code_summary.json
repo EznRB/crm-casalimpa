@@ -1,0 +1,155 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "Next.js (App Router)",
+    "React",
+    "Supabase",
+    "Prisma"
+  ],
+  "features": [
+    {
+      "name": "Autenticação",
+      "description": "Fluxo de login e callback OAuth com Supabase.",
+      "files": [
+        "src/app/login/page.tsx",
+        "src/hooks/useAuth.ts",
+        "src/app/auth/callback/page.tsx",
+        "src/middleware.ts"
+      ]
+    },
+    {
+      "name": "Clientes",
+      "description": "Listagem, criação e edição de clientes.",
+      "files": [
+        "src/app/clientes/page.tsx",
+        "src/app/clientes/novo/page.tsx",
+        "src/app/clientes/[id]/editar/page.tsx",
+        "src/app/api/clients/route.ts",
+        "src/app/api/clients/[id]/route.ts"
+      ]
+    },
+    {
+      "name": "Agendamentos",
+      "description": "CRUD de agendamentos com visualização em calendário.",
+      "files": [
+        "src/app/agendamentos/page.tsx",
+        "src/app/agendamentos/novo/page.tsx",
+        "src/app/agendamentos/[id]/editar/page.tsx",
+        "src/components/CalendarView.tsx",
+        "src/app/api/jobs/route.ts",
+        "src/app/api/jobs/[id]/route.ts"
+      ]
+    },
+    {
+      "name": "Orçamentos",
+      "description": "Gestão de orçamentos com geração de PDF e chatbot de orçamento.",
+      "files": [
+        "src/app/orcamentos/page.tsx",
+        "src/app/orcamentos/novo/page.tsx",
+        "src/app/orcamentos/[id]/page.tsx",
+        "src/app/api/orcamentos/[id]/pdf/route.ts",
+        "src/app/api/chatbot/budget/route.ts",
+        "src/components/OrcamentoChatbot.tsx"
+      ]
+    },
+    {
+      "name": "Faturas",
+      "description": "Emissão e visualização de faturas com exportação de PDF.",
+      "files": [
+        "src/app/faturas/page.tsx",
+        "src/app/faturas/nova/page.tsx",
+        "src/app/faturas/[id]/page.tsx",
+        "src/app/api/invoices/route.ts",
+        "src/app/api/invoices/[id]/route.ts",
+        "src/app/api/invoices/[id]/pdf/route.ts"
+      ]
+    },
+    {
+      "name": "Funcionários e Registros",
+      "description": "Gestão de funcionários e registros de trabalho.",
+      "files": [
+        "src/app/funcionarios/page.tsx",
+        "src/app/funcionarios/novo/page.tsx",
+        "src/app/funcionarios/[id]/editar/page.tsx",
+        "src/app/funcionarios/[id]/registros/page.tsx",
+        "src/app/api/employees/route.ts",
+        "src/app/api/employees/[id]/route.ts",
+        "src/app/api/employees/work-records/[id]/route.ts",
+        "src/app/api/employees/[id]/work-records/route.ts"
+      ]
+    },
+    {
+      "name": "Serviços",
+      "description": "Cadastro e edição de serviços oferecidos.",
+      "files": [
+        "src/app/servicos/page.tsx",
+        "src/app/servicos/novo/page.tsx",
+        "src/app/servicos/[id]/editar/page.tsx",
+        "src/app/api/services/route.ts",
+        "src/app/api/services/[id]/route.ts"
+      ]
+    },
+    {
+      "name": "Fluxo de Caixa",
+      "description": "Resumo e despesas do fluxo de caixa.",
+      "files": [
+        "src/app/fluxo-caixa/page.tsx",
+        "src/app/api/cashflow/summary/route.ts",
+        "src/app/api/cashflow/expense/route.ts"
+      ]
+    },
+    {
+      "name": "Relatórios",
+      "description": "Relatórios mensais e por cliente, com PDF.",
+      "files": [
+        "src/app/relatorios/page.tsx",
+        "src/app/api/reports/monthly/route.ts",
+        "src/app/api/reports/client/[id]/route.ts",
+        "src/app/api/reports/pdf/route.ts"
+      ]
+    },
+    {
+      "name": "Chatbot",
+      "description": "Widget de chatbot e API de assistente.",
+      "files": [
+        "src/components/ChatbotWidget.tsx",
+        "src/app/api/chatbot/assistant/route.ts",
+        "src/server/chat/tools.ts"
+      ]
+    },
+    {
+      "name": "Infra/Utilitários",
+      "description": "Logger, limites de taxa, provedores de IA e integração com Supabase/Prisma.",
+      "files": [
+        "src/lib/logger.ts",
+        "src/lib/ratelimit.ts",
+        "src/lib/ai/provider.ts",
+        "src/lib/supabase.ts",
+        "src/lib/supabaseServer.ts",
+        "src/lib/prisma.ts",
+        "src/lib/db.ts",
+        "src/types/supabase.ts",
+        "src/types/modules.d.ts"
+      ]
+    },
+    {
+      "name": "UI Base",
+      "description": "Layout geral, navegação, dashboard e temas.",
+      "files": [
+        "src/app/layout.tsx",
+        "src/app/page.tsx",
+        "src/components/Navigation.tsx",
+        "src/components/Dashboard.tsx",
+        "src/components/ThemeToggle.tsx",
+        "src/app/error.tsx"
+      ]
+    },
+    {
+      "name": "Saúde do Sistema",
+      "description": "Endpoint de health-check para monitoramento.",
+      "files": [
+        "src/app/api/health/route.ts"
+      ]
+    }
+  ]
+}

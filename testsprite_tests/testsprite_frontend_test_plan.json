@@ -1,0 +1,446 @@
+[
+  {
+    "id": "TC001",
+    "title": "OAuth Login Success",
+    "description": "Verify that users can log in successfully using OAuth with valid credentials.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Initiate OAuth login flow"
+      },
+      {
+        "type": "action",
+        "description": "Provide valid OAuth credentials"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user is authenticated and redirected to dashboard"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "OAuth Login Failure",
+    "description": "Check system behavior when OAuth login fails due to invalid credentials or cancellation.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Initiate OAuth login flow"
+      },
+      {
+        "type": "action",
+        "description": "Supply invalid credentials or cancel login"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify appropriate error message is shown and user is not logged in"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Client CRUD Operations",
+    "description": "Verify Create, Read, Update and Delete operations for client management including multi-address and contact associations.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create a new client with basic details, multiple addresses and contacts"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify client is saved with all details correctly"
+      },
+      {
+        "type": "action",
+        "description": "Edit the client details and update contact information"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify updates are saved and displayed properly"
+      },
+      {
+        "type": "action",
+        "description": "Delete the client"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify client no longer exists in the client list"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Schedule Service with Team Allocation and Conflict Prevention",
+    "description": "Test scheduling a service order ensuring team availability and conflict prevention workflows.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select or register a client"
+      },
+      {
+        "type": "action",
+        "description": "Define service details and schedule timing"
+      },
+      {
+        "type": "assertion",
+        "description": "System checks team availability and suggests appropriate allocation"
+      },
+      {
+        "type": "action",
+        "description": "Confirm order scheduling"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify order is created and notification is sent"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to schedule overlapping service with same team"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system prevents scheduling conflict and displays error"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Reschedule Service with Availability Revalidation",
+    "description": "Verify system behavior when rescheduling service orders including revalidation of team availability and update of history.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select an existing scheduled order"
+      },
+      {
+        "type": "action",
+        "description": "Change service date/time"
+      },
+      {
+        "type": "assertion",
+        "description": "System revalidates resource and team availability"
+      },
+      {
+        "type": "action",
+        "description": "Confirm rescheduling"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify schedule is updated and history of changes is saved"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Cancel Service Order and Record History",
+    "description": "Verify cancellation process including record update and notification of stakeholders.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Select an existing scheduled service order"
+      },
+      {
+        "type": "action",
+        "description": "Initiate order cancellation"
+      },
+      {
+        "type": "assertion",
+        "description": "System updates order status as cancelled and records cancellation history"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify notification is sent to relevant users"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Invoice Creation and Payment Reconciliation",
+    "description": "Verify invoices can be generated from completed orders, payment marking works, and receipts are issued with PDF export.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Complete a service order"
+      },
+      {
+        "type": "action",
+        "description": "Generate invoice from completed order"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify invoice details correspond to service completion data"
+      },
+      {
+        "type": "action",
+        "description": "Mark invoice as paid"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify payment is recorded and receipt is generated"
+      },
+      {
+        "type": "action",
+        "description": "Export invoice and receipt to PDF"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify PDF files are generated accurately with correct data"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Role-Based Access Control Enforcement",
+    "description": "Verify that users with different roles (Admin, Operator, Financial, Technical) have access only to permitted features and data.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Admin and navigate through all modules"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Admin has full access including user management"
+      },
+      {
+        "type": "action",
+        "description": "Login as Operator and attempt to access financial modules"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Operator is denied access to financial data"
+      },
+      {
+        "type": "action",
+        "description": "Login as Financial user and attempt to modify service schedules"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Financial user cannot modify schedules"
+      },
+      {
+        "type": "action",
+        "description": "Login as Technical user and access team management features"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify Technical user can view and edit employee skills and availability"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Generate Reports and Export CSV/PDF",
+    "description": "Verify monthly and client-based reports can be generated and exported as CSV and PDF files.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to reports section"
+      },
+      {
+        "type": "action",
+        "description": "Generate monthly report"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify report data is accurate and complete"
+      },
+      {
+        "type": "action",
+        "description": "Export monthly report to CSV and PDF"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify exported files are correctly formatted and contain expected data"
+      },
+      {
+        "type": "action",
+        "description": "Generate client-based report and export to PDF"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify client report accuracy and PDF export functionality"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Chatbot Budget Generation Assistance",
+    "description": "Validate chatbot functionality to assist users in generating service budgets and interacting with the system.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access chatbot widget in the budgets module"
+      },
+      {
+        "type": "action",
+        "description": "Request a service budget using the chatbot"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify chatbot responds with correct budget details"
+      },
+      {
+        "type": "action",
+        "description": "Provide invalid or ambiguous input to chatbot"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify chatbot handles errors gracefully and prompts for clarification"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "System Health Check Endpoint",
+    "description": "Verify the health check API endpoint returns accurate system status for monitoring.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send a request to the system health check endpoint"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify response indicates system is operational and performance metrics are included"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Team Management - Employee Profile and Skill Assignment",
+    "description": "Test functionality to create, edit employee profiles including skill and availability management.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create a new employee profile with skills and availability"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify employee information is saved and retrievable"
+      },
+      {
+        "type": "action",
+        "description": "Edit employee skills and adjust availability"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify updates are accurately reflected in the system"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to allocate employee to a service order matching their skills"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify automatic allocation respects skills and availability"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "UI Responsiveness and Theme Toggle",
+    "description": "Verify that the UI is responsive on various device sizes and that the dark/light theme toggle works correctly.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Load the main dashboard on desktop, tablet and mobile resolutions"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI layout adjusts appropriately without element overlap or cutoff"
+      },
+      {
+        "type": "action",
+        "description": "Toggle between dark and light themes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the theme changes globally and persists across pages"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Scheduling Performance Validation",
+    "description": "Check that the average scheduling time remains under 1 minute under standard network conditions.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Initiate scheduling of multiple service orders under normal system load"
+      },
+      {
+        "type": "assertion",
+        "description": "Measure and verify that scheduling time per order is below one minute on average"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Page Load Times for Primary Features",
+    "description": "Ensure that pages for primary features load within 2 seconds under standard network conditions.",
+    "category": "performance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to client management, scheduling, invoices, and reports pages"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that page load times are under 2 seconds each"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "System Availability Monitoring",
+    "description": "Verify system uptime meets 99% availability during business hours via health monitoring and logs analysis.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Review system health check data and logs during business hours"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm system availability is 99% or higher"
+      }
+    ]
+  }
+]

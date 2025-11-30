@@ -1,0 +1,16 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3001/login",
+  "executionArgs": {
+    "projectName": "crm casa limpa",
+    "projectPath": "c:\\Users\\Enzo Marcelo\\Desktop\\testes SOLO TRAE\\crm casa limpa",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-Ynrd3TGW6lEFPFfMgK4SoPizRhEhiMtsR4hxsNutcbsk_O8FPBacicFK-3OnenuqwL2DnWts96pdq3jyjupVTH9FTzABLT56-YOrt3DXJEvdJEdKF5alRKjb8BBNivE4aGY"
+    }
+  },
+  "proxy": "http://85c49ca6-bfcc-4b53-8e63-e40fe531681e:HnzlqSWM0Q9EVaX7gK5OE4hGTk9d8xCU@tun.testsprite.com:8080"
+}

@@ -1,0 +1,150 @@
+[
+  {
+    "id": "API001",
+    "title": "Clientes - CRUD básico",
+    "description": "Validar criação, leitura, atualização e exclusão de clientes via API.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      { "type": "action", "description": "POST /api/clients com payload válido" },
+      { "type": "assertion", "description": "Resposta 201 e body com id" },
+      { "type": "action", "description": "GET /api/clients pelo id criado" },
+      { "type": "assertion", "description": "Resposta 200 com dados consistentes" },
+      { "type": "action", "description": "PUT /api/clients/{id} atualizando campos" },
+      { "type": "assertion", "description": "Resposta 200 e campos atualizados" },
+      { "type": "action", "description": "DELETE /api/clients/{id}" },
+      { "type": "assertion", "description": "Resposta 204 e recurso removido" }
+    ]
+  },
+  {
+    "id": "API002",
+    "title": "Serviços - CRUD básico",
+    "description": "Validar operações em /api/services e /api/services/{id}.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      { "type": "action", "description": "POST /api/services com serviço válido" },
+      { "type": "assertion", "description": "201 criado" },
+      { "type": "action", "description": "GET /api/services/{id}" },
+      { "type": "assertion", "description": "200 com dados do serviço" },
+      { "type": "action", "description": "PUT /api/services/{id}" },
+      { "type": "assertion", "description": "200 com atualização" },
+      { "type": "action", "description": "DELETE /api/services/{id}" },
+      { "type": "assertion", "description": "204 sem conteúdo" }
+    ]
+  },
+  {
+    "id": "API003",
+    "title": "Agendamentos - criação e status",
+    "description": "Validar criação de job em /api/jobs, leitura e atualização de status em /api/jobs/{id}.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      { "type": "action", "description": "POST /api/jobs para criar agendamento" },
+      { "type": "assertion", "description": "201 com status 'Agendado'" },
+      { "type": "action", "description": "GET /api/jobs/{id}" },
+      { "type": "assertion", "description": "200 com dados do agendamento" },
+      { "type": "action", "description": "PUT /api/jobs/{id} para 'Em Execução'" },
+      { "type": "assertion", "description": "200 e status atualizado" }
+    ]
+  },
+  {
+    "id": "API004",
+    "title": "Faturas - criação, status e PDF",
+    "description": "Validar criação de fatura, mudança de status e geração de PDF.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      { "type": "action", "description": "POST /api/invoices com ordem concluída" },
+      { "type": "assertion", "description": "201 com valores corretos" },
+      { "type": "action", "description": "PUT /api/invoices/{id} para marcar pago" },
+      { "type": "assertion", "description": "200 e status 'paid'" },
+      { "type": "action", "description": "GET /api/invoices/{id}/pdf" },
+      { "type": "assertion", "description": "200 e conteúdo PDF válido" }
+    ]
+  },
+  {
+    "id": "API005",
+    "title": "Funcionários - CRUD e registros de trabalho",
+    "description": "Validar APIs de funcionários e registros (work-records).",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      { "type": "action", "description": "POST /api/employees" },
+      { "type": "assertion", "description": "201 criado" },
+      { "type": "action", "description": "POST /api/employees/{id}/work-records" },
+      { "type": "assertion", "description": "201 e registro vinculado" },
+      { "type": "action", "description": "PUT /api/employees/work-records/{id} para toggle pago" },
+      { "type": "assertion", "description": "200 e flag 'paid' ajustada" }
+    ]
+  },
+  {
+    "id": "API006",
+    "title": "Fluxo de Caixa - resumo e despesas",
+    "description": "Validar /api/cashflow/summary e /api/cashflow/expense.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      { "type": "action", "description": "GET /api/cashflow/summary?period=YYYY-MM" },
+      { "type": "assertion", "description": "200 com totais corretos" },
+      { "type": "action", "description": "POST /api/cashflow/expense" },
+      { "type": "assertion", "description": "201 e despesa registrada" }
+    ]
+  },
+  {
+    "id": "API007",
+    "title": "Relatórios - mensal, cliente e PDF",
+    "description": "Validar endpoints de relatórios e exportação em PDF.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      { "type": "action", "description": "GET /api/reports/monthly?period=YYYY-MM" },
+      { "type": "assertion", "description": "200 com métricas do período" },
+      { "type": "action", "description": "GET /api/reports/client/{id}" },
+      { "type": "assertion", "description": "200 com dados do cliente" },
+      { "type": "action", "description": "POST /api/reports/pdf" },
+      { "type": "assertion", "description": "200 e PDF válido" }
+    ]
+  },
+  {
+    "id": "API008",
+    "title": "Chatbot - assistant e budget",
+    "description": "Validar respostas heurísticas e fallback de IA nos endpoints de chatbot.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      { "type": "action", "description": "POST /api/chatbot/assistant com prompt KPI" },
+      { "type": "assertion", "description": "200 com resposta heurística" },
+      { "type": "action", "description": "POST /api/chatbot/assistant com prompt sem heurística" },
+      { "type": "assertion", "description": "200 com resposta de fallback HF" },
+      { "type": "action", "description": "POST /api/chatbot/budget com dados de orçamento" },
+      { "type": "assertion", "description": "200 com instruções de orçamento" }
+    ]
+  },
+  {
+    "id": "API009",
+    "title": "Rate limit e erros",
+    "description": "Garantir que endpoints apliquem rate limit e retornem erros apropriados.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      { "type": "action", "description": "Disparar múltiplas requisições consecutivas ao mesmo endpoint" },
+      { "type": "assertion", "description": "429 Too Many Requests com mensagem clara" },
+      { "type": "action", "description": "Verificar logs de eventos de rate limit" },
+      { "type": "assertion", "description": "Logs contêm contexto (ip/chave, timestamp)" }
+    ]
+  },
+  {
+    "id": "API010",
+    "title": "Segurança - autorização por papéis",
+    "description": "Validar que ações restritas exigem papéis apropriados e negam usuários sem permissão.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      { "type": "action", "description": "Executar ação restrita com usuário operador" },
+      { "type": "assertion", "description": "403 Forbidden ou redirecionamento" },
+      { "type": "action", "description": "Executar a mesma ação com usuário admin" },
+      { "type": "assertion", "description": "200 sucesso" }
+    ]
+  }
+]
