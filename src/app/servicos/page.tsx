@@ -1,19 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import type { Database } from '@/types/supabase'
 import { getServices, deleteService as deleteServiceDb } from '@/lib/db'
 import Link from 'next/link'
 import { Plus, Edit, Trash2, Package } from 'lucide-react'
 
-interface Service {
-  id: string
-  name: string
-  description: string | null
-  base_price: number
-  duration_minutes: number
-  active: boolean
-  created_at: string
-}
+type Service = Database['public']['Tables']['services']['Row']
 
 export default function ServicosPage() {
   const [services, setServices] = useState<Service[]>([])
